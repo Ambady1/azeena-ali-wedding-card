@@ -10,15 +10,19 @@ body.locked{overflow:hidden}
 
 /* intro */
 .intro{position:fixed;inset:0;z-index:10;display:grid;place-items:center;background:radial-gradient(circle at 50% 30%,#8f1b2d,#4a0f18 75%);transition:transform 1.2s cubic-bezier(.7,0,.2,1),opacity 1s;padding:16px}
-.intro.open{transform:translateY(-100%);opacity:0;pointer-events:none}
+.intro.open{transform:translateY(-100%) scale(1.08);opacity:0;pointer-events:none}
 .arch{width:min(88vw,380px);height:min(82dvh,640px);border:2px solid var(--gold);border-radius:999px 999px 18px 18px;padding:8px;box-shadow:0 0 40px rgba(176,141,87,.35);animation:glow 3s ease-in-out infinite alternate}
 .arch-inner{height:100%;border:1px solid var(--gold);border-radius:999px 999px 12px 12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;color:#f3dfb4;text-align:center;padding:24px}
 .bismillah{font-family:'Amiri',serif;font-size:1.7rem;opacity:0;animation:fadeUp 1.4s .3s forwards}
 .intro-names{font-size:3.2rem;line-height:1.1;opacity:0;animation:fadeUp 1.4s .9s forwards;background:linear-gradient(90deg,#c9a45f,#fff3cf,#c9a45f);background-size:200%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:fadeUp 1.4s .9s forwards,shine 4s 2s linear infinite}
 .intro-names span{font-size:2rem}
 .intro .small{opacity:0;animation:fadeUp 1.2s 1.4s forwards}
-.seal{margin-top:18px;width:96px;height:96px;border-radius:50%;border:2px solid var(--gold);background:radial-gradient(circle at 35% 30%,#b3263c,#6b0f1d);color:#f3dfb4;font:600 .85rem/1.2 'Cormorant Garamond',serif;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;opacity:0;animation:fadeUp 1s 2s forwards,pulse 1.8s 3s infinite}
+.seal{margin-top:18px;width:96px;height:96px;border-radius:50%;border:2px solid var(--gold);background:radial-gradient(circle at 35% 30%,#b3263c,#6b0f1d);color:#f3dfb4;font:600 .85rem/1.2 'Cormorant Garamond',serif;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;opacity:0;animation:fadeUp 1s 2s forwards,pulse 1.8s 3s infinite;transition:transform .3s ease}
+.seal:hover{transform:scale(1.05)}
 .seal:active{transform:scale(.94)}
+.intro.open .arch{animation:archOpen 1.2s cubic-bezier(.7,0,.2,1) forwards}
+.intro.open .arch-inner{animation:innerFade 1s .2s forwards}
+.intro.open .seal{animation:sealOpen .6s .1s forwards}
 
 /* card */
 .card{min-height:100dvh;padding:14px;opacity:0;transition:opacity 1s .4s}
@@ -61,5 +65,8 @@ body.locked{overflow:hidden}
 @keyframes glow{to{box-shadow:0 0 70px rgba(176,141,87,.6)}}
 @keyframes pulse{50%{box-shadow:0 0 0 14px rgba(176,141,87,0)}0%{box-shadow:0 0 0 0 rgba(176,141,87,.6)}}
 @keyframes shine{to{background-position:-200% 0}}
+@keyframes archOpen{to{transform:translateY(-40px) scale(1.05);opacity:0}}
+@keyframes innerFade{to{opacity:0;transform:translateY(-20px)}}
+@keyframes sealOpen{to{transform:scale(1.4);opacity:0}}
 @media(prefers-reduced-motion:reduce){*{animation-duration:.01s!important;transition-duration:.01s!important}}
 @media(min-width:600px){.actions{flex-direction:row;flex-wrap:wrap;justify-content:center}.btn{padding:12px 20px}}
