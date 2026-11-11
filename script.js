@@ -7,7 +7,18 @@
   };
 
   const $ = (id) => document.getElementById(id);
-  const card = $("card"), intro = $("intro");
+  const card = $("card"), intro = $("intro"), video = $("introVideo"), soundBtn = $("soundToggle");
+
+  // Attempt autoplay muted (browser policy compliant)
+  video.play().catch(() => {});
+
+  // Dedicated sound toggle button so user can unmute without dismissing the intro
+  soundBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    video.muted = !video.muted;
+    soundBtn.innerHTML = video.muted ? "&#128263; Tap for Sound" : "&#128266; Sound On";
+    if (!video.muted) video.play().catch(() => {});
+  });
 
   // Open invitation by tapping anywhere on the intro screen
   function openInvitation() {
@@ -19,6 +30,8 @@
     window.scrollTo(0, 0);
     burst();
     observeReveals();
+    // Pause video after transition finishes to save battery/data
+    setTimeout(() => { try { video.pause(); } catch (_) {} }, 1200);
   }
 
   intro.addEventListener("click", openInvitation);
