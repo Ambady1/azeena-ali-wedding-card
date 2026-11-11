@@ -15,14 +15,10 @@
 <body class="locked">
 <canvas id="petals" aria-hidden="true"></canvas>
 
-<section id="intro" class="intro">
-  <div class="arch">
-    <div class="arch-inner">
-      <p class="bismillah" lang="ar" dir="rtl">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p>
-      <h1 class="script intro-names">Azeena <span>&</span> Ali</h1>
-      <p class="caps small">Wedding Invitation</p>
-      <button id="openBtn" class="seal" aria-label="Open invitation"><span>Tap<br>to open</span></button>
-    </div>
+<section id="intro" class="intro" role="button" tabindex="0" aria-label="Tap anywhere to open invitation">
+  <div class="intro-bg" style="background-image: url('Resources/firstpage.png');"></div>
+  <div class="intro-prompt" aria-hidden="true">
+    <span>Tap anywhere to open</span>
   </div>
 </section>
 

@@ -9,8 +9,9 @@
   const $ = (id) => document.getElementById(id);
   const card = $("card"), intro = $("intro");
 
-  // Open invitation
-  $("openBtn").addEventListener("click", () => {
+  // Open invitation by tapping anywhere on the intro screen
+  function openInvitation() {
+    if (intro.classList.contains("open")) return;
     intro.classList.add("open");
     document.body.classList.remove("locked");
     card.classList.add("show");
@@ -18,6 +19,14 @@
     window.scrollTo(0, 0);
     burst();
     observeReveals();
+  }
+
+  intro.addEventListener("click", openInvitation);
+  intro.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      openInvitation();
+    }
   });
 
   // Scroll reveal
