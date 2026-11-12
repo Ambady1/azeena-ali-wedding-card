@@ -1,18 +1,10 @@
 (() => {
-  const EVENT = {
-    title: "Nikkah of Azeena & Ali",
-    start: new Date("2027-01-17T11:30:00+05:30"),
-    durationHrs: 3,
-    location: "Highness Auditorium, Pukkattupady"
-  };
-
   const $ = (id) => document.getElementById(id);
   const card = $("card"), intro = $("intro"), video = $("introVideo"), soundBtn = $("soundToggle");
+  const line1 = $("line1"), lineAnd = $("lineAnd"), line2 = $("line2");
 
-  // Attempt autoplay muted (browser policy compliant)
   video.play().catch(() => {});
 
-  // Dedicated sound toggle button so user can unmute without dismissing the intro
   soundBtn.addEventListener("click", (e) => {
     e.stopPropagation();
     video.muted = !video.muted;
@@ -20,7 +12,40 @@
     if (!video.muted) video.play().catch(() => {});
   });
 
-  // Open invitation by tapping anywhere on the intro screen
+  function typeText(element, text, speed) {
+    return new Promise((resolve) => {
+      element.classList.add("type-cursor");
+      let i = 0;
+      function step() {
+        if (i < text.length) {
+          element.textContent += text.charAt(i);
+          i++;
+          setTimeout(step, speed);
+        } else {
+          element.classList.remove("type-cursor");
+          resolve();
+        }
+      }
+      step();
+    });
+  }
+
+  async function startTypewriter() {
+    line1.textContent = "";
+    lineAnd.textContent = "";
+    line2.textContent = "";
+    lineAnd.classList.remove("show");
+
+    await new Promise((r) => setTimeout(r, 450));
+    await typeText(line1, "Azeena Azeez", 110);
+
+    lineAnd.textContent = "and";
+    lineAnd.classList.add("show");
+    await new Promise((r) => setTimeout(r, 400));
+
+    await typeText(line2, "Ali Shamsudheen", 110);
+  }
+
   function openInvitation() {
     if (intro.classList.contains("open")) return;
     intro.classList.add("open");
@@ -29,9 +54,8 @@
     card.removeAttribute("aria-hidden");
     window.scrollTo(0, 0);
     burst();
-    observeReveals();
-    // Pause video after transition finishes to save battery/data
     setTimeout(() => { try { video.pause(); } catch (_) {} }, 1200);
+    startTypewriter();
   }
 
   intro.addEventListener("click", openInvitation);
@@ -41,53 +65,6 @@
       openInvitation();
     }
   });
-
-  // Scroll reveal
-  function observeReveals() {
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } });
-    }, { threshold: 0.15 });
-    document.querySelectorAll(".reveal").forEach((el, i) => {
-      el.style.transitionDelay = Math.min(i, 4) * 0.08 + "s";
-      io.observe(el);
-    });
-  }
-
-  // Countdown
-  function tick() {
-    let diff = Math.max(0, EVENT.start - new Date());
-    const d = Math.floor(diff / 864e5); diff %= 864e5;
-    const h = Math.floor(diff / 36e5); diff %= 36e5;
-    const m = Math.floor(diff / 6e4); const s = Math.floor((diff % 6e4) / 1e3);
-    $("cd-d").textContent = d;
-    $("cd-h").textContent = String(h).padStart(2, "0");
-    $("cd-m").textContent = String(m).padStart(2, "0");
-    $("cd-s").textContent = String(s).padStart(2, "0");
-  }
-  tick(); setInterval(tick, 1000);
-
-  // Add to calendar (.ics)
-  const fmt = (d) => d.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
-  $("calBtn").addEventListener("click", () => {
-    const end = new Date(EVENT.start.getTime() + EVENT.durationHrs * 36e5);
-    const ics = [
-      "BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Wedding Card//EN", "BEGIN:VEVENT",
-      "UID:azeena-ali-2027@wedding", "DTSTAMP:" + fmt(new Date()),
-      "DTSTART:" + fmt(EVENT.start), "DTEND:" + fmt(end),
-      "SUMMARY:" + EVENT.title, "LOCATION:" + EVENT.location,
-      "DESCRIPTION:Your presence will make our day more special.",
-      "BEGIN:VALARM", "TRIGGER:-P1D", "ACTION:DISPLAY", "DESCRIPTION:Nikkah tomorrow", "END:VALARM",
-      "END:VEVENT", "END:VCALENDAR"
-    ].join("\r\n");
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(new Blob([ics], { type: "text/calendar" }));
-    a.download = "azeena-ali-nikkah.ics";
-    document.body.appendChild(a); a.click(); a.remove();
-  });
-
-  // WhatsApp share
-  const msg = "You are cordially invited to the wedding of Azeena & Ali - Sunday, 17 January 2027, 11:30 AM, Highness Auditorium, Pukkattupady.\n" + location.href;
-  $("shareBtn").href = "https://wa.me/?text=" + encodeURIComponent(msg);
 
   // Falling petals
   const cv = $("petals"), ctx = cv.getContext("2d");
