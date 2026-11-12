@@ -1,6 +1,7 @@
 (() => {
   const $ = (id) => document.getElementById(id);
   const card = $("card"), intro = $("intro"), video = $("introVideo"), soundBtn = $("soundToggle");
+  const animSection = $("animSection"), animVideo = $("animVideo");
   const brideFirst = $("brideFirst"), brideLast = $("brideLast");
   const lineAnd = $("lineAnd");
   const groomFirst = $("groomFirst"), groomLast = $("groomLast");
@@ -10,6 +11,7 @@
   soundBtn.addEventListener("click", (e) => {
     e.stopPropagation();
     video.muted = !video.muted;
+    animVideo.muted = video.muted;
     soundBtn.innerHTML = video.muted ? "&#128263; Tap for Sound" : "&#128266; Sound On";
     if (!video.muted) video.play().catch(() => {});
   });
@@ -40,32 +42,72 @@
     groomLast.textContent = "";
     lineAnd.classList.remove("show");
 
+    const TYPING_SPEED = 200;
 
     await new Promise((r) => setTimeout(r, 450));
-       await typeText(brideFirst, "Azeena", 200);
+    await typeText(brideFirst, "Azeena", TYPING_SPEED);
     await new Promise((r) => setTimeout(r, 180));
-    await typeText(brideLast, "Azeez", 200);
+    await typeText(brideLast, "Azeez", TYPING_SPEED);
 
     lineAnd.textContent = "and";
     lineAnd.classList.add("show");
     await new Promise((r) => setTimeout(r, 400));
 
-    
-    await typeText(groomFirst, "Ali", 200);
+    await typeText(groomFirst, "Ali", TYPING_SPEED);
     await new Promise((r) => setTimeout(r, 180));
-    await typeText(groomLast, "Shamsudheen", 200);
+    await typeText(groomLast, "Shamsudheen", TYPING_SPEED);
+  }
+
+  function transitionToNamesPage() {
+    animSection.classList.add("fade-out");
+    card.classList.add("show");
+    card.removeAttribute("aria-hidden");
+    burst();
+    setTimeout(() => {
+      animSection.classList.remove("active", "fade-out");
+      animSection.style.display = "none";
+      try { animVideo.pause(); } catch (_) {}
+    }, 700);
+    startTypewriter();
   }
 
   function openInvitation() {
     if (intro.classList.contains("open")) return;
     intro.classList.add("open");
     document.body.classList.remove("locked");
-    card.classList.add("show");
-    card.removeAttribute("aria-hidden");
-    window.scrollTo(0, 0);
-    burst();
-    setTimeout(() => { try { video.pause(); } catch (_) {} }, 1200);
-    startTypewriter();
+
+    // Inherit audio preference from intro screen
+    animVideo.muted = video.muted;
+
+    // Reveal intermediate animation
+    animSection.style.display = "block";
+    requestAnimationFrame(() => {
+      animSection.classList.add("active");
+    });
+
+    const playPromise = animVideo.play();
+    if (playPromise !== undefined) {
+      playPromise.catch(() => {
+        // Fallback: if browser blocks unmuted playback, play muted
+        animVideo.muted = true;
+        animVideo.play().catch(transitionToNamesPage);
+      });
+    }
+
+    setTimeout(() => { try { video.pause(); } catch (_) {} }, 600);
+
+    // On video completion, seamlessly cross-fade to the names stage
+    let handled = false;
+    function onAnimComplete() {
+      if (handled) return;
+      handled = true;
+      transitionToNamesPage();
+    }
+
+    animVideo.addEventListener("ended", onAnimComplete, { once: true });
+
+    // Safety timeout in case video fails or hangs on mobile
+    animVideo.addEventListener("error", onAnimComplete, { once: true });
   }
 
   intro.addEventListener("click", openInvitation);
