@@ -37,13 +37,13 @@
     lineAnd.classList.remove("show");
 
     await new Promise((r) => setTimeout(r, 450));
-    await typeText(line1, "Azeena Azeez", 110);
+    await typeText(line1, "Azeena Azeez", 200);
 
     lineAnd.textContent = "and";
     lineAnd.classList.add("show");
     await new Promise((r) => setTimeout(r, 400));
 
-    await typeText(line2, "Ali Shamsudheen", 110);
+    await typeText(line2, "Ali Shamsudheen", 200);
   }
 
   function openInvitation() {
