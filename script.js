@@ -40,7 +40,6 @@
     groomLast.textContent = "";
     lineAnd.classList.remove("show");
 
-    const TYPING_SPEED = 200; // Your preferred speed
 
     await new Promise((r) => setTimeout(r, 450));
        await typeText(brideFirst, "Azeena", 200);
