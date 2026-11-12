@@ -1,7 +1,9 @@
 (() => {
   const $ = (id) => document.getElementById(id);
   const card = $("card"), intro = $("intro"), video = $("introVideo"), soundBtn = $("soundToggle");
-  const line1 = $("line1"), lineAnd = $("lineAnd"), line2 = $("line2");
+  const brideFirst = $("brideFirst"), brideLast = $("brideLast");
+  const lineAnd = $("lineAnd");
+  const groomFirst = $("groomFirst"), groomLast = $("groomLast");
 
   video.play().catch(() => {});
 
@@ -31,19 +33,28 @@
   }
 
   async function startTypewriter() {
-    line1.textContent = "";
+    brideFirst.textContent = "";
+    brideLast.textContent = "";
     lineAnd.textContent = "";
-    line2.textContent = "";
+    groomFirst.textContent = "";
+    groomLast.textContent = "";
     lineAnd.classList.remove("show");
 
+    const TYPING_SPEED = 200; // Your preferred speed
+
     await new Promise((r) => setTimeout(r, 450));
-    await typeText(line1, "Azeena Azeez", 200);
+       await typeText(brideFirst, "Azeena", 200);
+    await new Promise((r) => setTimeout(r, 180));
+    await typeText(brideLast, "Azeez", 200);
 
     lineAnd.textContent = "and";
     lineAnd.classList.add("show");
     await new Promise((r) => setTimeout(r, 400));
 
-    await typeText(line2, "Ali Shamsudheen", 200);
+    
+    await typeText(groomFirst, "Ali", 200);
+    await new Promise((r) => setTimeout(r, 180));
+    await typeText(groomLast, "Shamsudheen", 200);
   }
 
   function openInvitation() {
