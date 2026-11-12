@@ -7,6 +7,8 @@
 <title>Azeena & Ali | Wedding Invitation</title>
 <meta property="og:title" content="Azeena & Ali - Wedding Invitation">
 <meta property="og:description" content="Nikkah on Sunday, 17 January 2027, 11:30 AM at Highness Auditorium, Pukkattupady.">
+<link rel="preload" href="Resources/firstpage.mp4" as="video" type="video/mp4">
+<link rel="preload" href="Resources/lastpage.png" as="image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Amiri&family=Cormorant+Garamond:wght@400;600&family=Great+Vibes&display=swap" rel="stylesheet">
@@ -16,7 +18,7 @@
 <canvas id="petals" aria-hidden="true"></canvas>
 
 <section id="intro" class="intro" role="button" tabindex="0" aria-label="Tap anywhere to open invitation">
-  <video id="introVideo" class="intro-video" src="Resources/firstpage.mp4" playsinline loop autoplay muted preload="auto"></video>
+  <video id="introVideo" class="intro-video" src="Resources/firstpage.mp4" poster="Resources/firstpage.png" playsinline loop autoplay muted preload="auto"></video>
   <button id="soundToggle" class="sound-toggle" type="button" aria-label="Toggle sound">&#128263; Tap for Sound</button>
   <div class="intro-prompt" aria-hidden="true">
     <span>Tap anywhere to open</span>
@@ -24,6 +26,9 @@
 </section>
 
 <main id="card" class="card" aria-hidden="true">
+  <div class="card-bg" style="background-image: url('Resources/lastpage.png');"></div>
+  <div class="card-backdrop"></div>
+
   <div class="frame">
     <p class="caps reveal">Together with our families<br>we cordially invite you<br>to the wedding of</p>
     <div class="orn reveal"><i></i><b>&#10086;</b><i></i></div>
