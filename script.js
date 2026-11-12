@@ -2,18 +2,23 @@
   const $ = (id) => document.getElementById(id);
   const card = $("card"), intro = $("intro"), video = $("introVideo"), soundBtn = $("soundToggle");
   const animSection = $("animSection"), animVideo = $("animVideo");
+  const loveAudio = $("loveAudio");
   const brideFirst = $("brideFirst"), brideLast = $("brideLast");
   const lineAnd = $("lineAnd");
   const groomFirst = $("groomFirst"), groomLast = $("groomLast");
+
+  let isMuted = true;
 
   video.play().catch(() => {});
 
   soundBtn.addEventListener("click", (e) => {
     e.stopPropagation();
-    video.muted = !video.muted;
-    animVideo.muted = video.muted;
-    soundBtn.innerHTML = video.muted ? "&#128263; Tap for Sound" : "&#128266; Sound On";
-    if (!video.muted) video.play().catch(() => {});
+    isMuted = !isMuted;
+    video.muted = isMuted;
+    animVideo.muted = isMuted;
+    loveAudio.muted = isMuted;
+    soundBtn.innerHTML = isMuted ? "&#128263; Tap for Sound" : "&#128266; Sound On";
+    if (!isMuted) video.play().catch(() => {});
   });
 
   function typeText(element, text, speed) {
@@ -59,15 +64,23 @@
   }
 
   function transitionToNamesPage() {
+    // 1. Instantly fire love.MP3 (no waiting for fade transition)
+    loveAudio.currentTime = 0;
+    loveAudio.muted = isMuted;
+    loveAudio.play().catch(() => {});
+
+    // 2. Seamlessly display names card
     animSection.classList.add("fade-out");
     card.classList.add("show");
     card.removeAttribute("aria-hidden");
     burst();
+
     setTimeout(() => {
       animSection.classList.remove("active", "fade-out");
       animSection.style.display = "none";
       try { animVideo.pause(); } catch (_) {}
-    }, 700);
+    }, 600);
+
     startTypewriter();
   }
 
@@ -76,10 +89,11 @@
     intro.classList.add("open");
     document.body.classList.remove("locked");
 
-    // Inherit audio preference from intro screen
-    animVideo.muted = video.muted;
+    // Prime loveAudio immediately on user tap gesture to unlock mobile autoplay
+    loveAudio.load();
 
     // Reveal intermediate animation
+    animVideo.muted = isMuted;
     animSection.style.display = "block";
     requestAnimationFrame(() => {
       animSection.classList.add("active");
@@ -94,9 +108,8 @@
       });
     }
 
-    setTimeout(() => { try { video.pause(); } catch (_) {} }, 600);
+    setTimeout(() => { try { video.pause(); } catch (_) {} }, 500);
 
-    // On video completion, seamlessly cross-fade to the names stage
     let handled = false;
     function onAnimComplete() {
       if (handled) return;
@@ -105,8 +118,6 @@
     }
 
     animVideo.addEventListener("ended", onAnimComplete, { once: true });
-
-    // Safety timeout in case video fails or hangs on mobile
     animVideo.addEventListener("error", onAnimComplete, { once: true });
   }
 
