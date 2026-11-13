@@ -72,7 +72,7 @@
     animSection.classList.add("fade-out");
     card.classList.add("show");
     card.removeAttribute("aria-hidden");
-    sparkleBurst();
+    sparkleBurst(W / 2, H * 0.52, 60);
 
     setTimeout(() => {
       animSection.classList.remove("active", "fade-out");
@@ -126,9 +126,9 @@
     }
   });
 
-  // Golden Star-Dust Dusting System (4-point diamond glints + glowing gold micro-orbs)
+  // Celestial Constellation Bloom Interactive Particle Engine
   const cv = $("petals"), ctx = cv.getContext("2d");
-  let W, H, sparkles = [], running = true;
+  let W, H, sparkles = [], rings = [], running = true;
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   function resize() { W = cv.width = innerWidth; H = cv.height = innerHeight; }
@@ -136,33 +136,61 @@
   resize();
 
   const goldPalette = [
-    { fill: "#fff6d6", glow: "rgba(255, 246, 214, 0.9)" }, // Diamond light
+    { fill: "#ffffff", glow: "rgba(255, 255, 255, 0.95)" }, // Pure diamond light
+    { fill: "#fff6d6", glow: "rgba(255, 246, 214, 0.9)" },  // Starlight ivory
     { fill: "#fadb7f", glow: "rgba(250, 219, 127, 0.85)" }, // Warm champagne
-    { fill: "#d4af37", glow: "rgba(212, 175, 55, 0.8)" },  // Royal metallic gold
-    { fill: "#ffea9f", glow: "rgba(255, 234, 159, 0.9)" }  // Luminous amber
+    { fill: "#d4af37", glow: "rgba(212, 175, 55, 0.8)" },   // 24k Royal gold
+    { fill: "#ffea9f", glow: "rgba(255, 234, 159, 0.9)" }   // Radiant amber
   ];
 
-  function createSparkle(isBurst) {
+  function createSparkle(originX, originY, isTapBurst) {
     const angle = Math.random() * Math.PI * 2;
-    const speed = isBurst ? Math.random() * 6.5 + 2.5 : Math.random() * 0.9 + 0.3;
+    // Radial burst with high launch velocity
+    const speed = isTapBurst ? Math.random() * 8 + 3 : Math.random() * 0.9 + 0.3;
     const color = goldPalette[(Math.random() * goldPalette.length) | 0];
 
     return {
-      x: isBurst ? W / 2 + (Math.random() - 0.5) * 40 : Math.random() * W,
-      y: isBurst ? H * 0.52 + (Math.random() - 0.5) * 40 : -15,
-      vx: isBurst ? Math.cos(angle) * speed : (Math.random() - 0.5) * 0.6,
-      vy: isBurst ? Math.sin(angle) * speed - 1.8 : Math.random() * 0.9 + 0.4,
+      x: originX !== undefined ? originX : Math.random() * W,
+      y: originY !== undefined ? originY : -15,
+      vx: isTapBurst ? Math.cos(angle) * speed : (Math.random() - 0.5) * 0.6,
+      vy: isTapBurst ? Math.sin(angle) * speed : Math.random() * 0.9 + 0.4,
       size: Math.random() * 5 + 3,
       rotation: Math.random() * Math.PI,
-      rotSpeed: (Math.random() - 0.5) * 0.08,
-      isStar: Math.random() > 0.35, // 65% 4-point stars, 35% glowing round dust
+      rotSpeed: (Math.random() - 0.5) * 0.12,
+      isStar: Math.random() > 0.3,
       color: color,
-      alpha: isBurst ? 1 : Math.random() * 0.5 + 0.5,
-      decay: isBurst ? Math.random() * 0.012 + 0.008 : 0.003,
+      alpha: 1,
+      decay: isTapBurst ? Math.random() * 0.014 + 0.009 : 0.003,
       twinklePhase: Math.random() * Math.PI * 2,
-      isBurst: isBurst
+      isTapBurst: isTapBurst
     };
   }
+
+  function sparkleBurst(x, y, count) {
+    if (reduce) return;
+    const n = count || 32;
+    // Add glowing shockwave ring on tap
+    rings.push({ x: x, y: y, r: 4, maxR: 70, alpha: 0.9 });
+    for (let i = 0; i < n; i++) {
+      sparkles.push(createSparkle(x, y, true));
+    }
+  }
+
+  // Interactive tap / touch listener on the card stage
+  function handleTap(e) {
+    if (!card.classList.contains("show")) return;
+    const touch = e.touches ? e.touches[0] : e;
+    const x = touch.clientX || touch.pageX;
+    const y = touch.clientY || touch.pageY;
+    sparkleBurst(x, y, 32);
+  }
+
+  window.addEventListener("pointerdown", (e) => {
+    // Only trigger interactive tap bloom once the card is active
+    if (card.classList.contains("show")) {
+      handleTap(e);
+    }
+  }, { passive: true });
 
   function drawStar(x, y, r, rotation, color, alpha) {
     ctx.save();
@@ -170,10 +198,10 @@
     ctx.rotate(rotation);
     ctx.globalAlpha = Math.max(0, alpha);
     ctx.shadowColor = color.glow;
-    ctx.shadowBlur = r * 2.2;
+    ctx.shadowBlur = r * 2.4;
     ctx.fillStyle = color.fill;
 
-    // Elegant 4-pointed sparkle
+    // 4-pointed radiant star glint
     ctx.beginPath();
     ctx.moveTo(0, -r);
     ctx.quadraticCurveTo(0, 0, r, 0);
@@ -183,11 +211,11 @@
     ctx.closePath();
     ctx.fill();
 
-    // Central white-hot core
+    // Specular center
     ctx.fillStyle = "#ffffff";
     ctx.shadowBlur = 0;
     ctx.beginPath();
-    ctx.arc(0, 0, r * 0.28, 0, Math.PI * 2);
+    ctx.arc(0, 0, r * 0.3, 0, Math.PI * 2);
     ctx.fill();
 
     ctx.restore();
@@ -205,21 +233,60 @@
     ctx.restore();
   }
 
-  function sparkleBurst() {
-    if (reduce) return;
-    for (let i = 0; i < 70; i++) {
-      sparkles.push(createSparkle(true));
-    }
-  }
-
   function loop() {
     ctx.clearRect(0, 0, W, H);
 
-    // Subtle gentle ambient dusting continually floating down
-    if (!reduce && sparkles.length < 32 && Math.random() < 0.08) {
-      sparkles.push(createSparkle(false));
+    // Subtle gentle ambient background dusting
+    if (!reduce && sparkles.length < 24 && Math.random() < 0.06) {
+      sparkles.push(createSparkle());
     }
 
+    // Render expanding shockwave rings from tap points
+    for (let i = rings.length - 1; i >= 0; i--) {
+      const ring = rings[i];
+      ring.r += 3.2;
+      ring.alpha -= 0.038;
+      if (ring.alpha <= 0) {
+        rings.splice(i, 1);
+        continue;
+      }
+      ctx.save();
+      ctx.globalAlpha = Math.max(0, ring.alpha);
+      ctx.strokeStyle = "#fadb7f";
+      ctx.lineWidth = 1.4;
+      ctx.shadowColor = "rgba(250, 219, 127, 0.85)";
+      ctx.shadowBlur = 8;
+      ctx.beginPath();
+      ctx.arc(ring.x, ring.y, ring.r, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    // Draw constellation tracer lines connecting nearby burst stars
+    const burstParticles = sparkles.filter((s) => s.isTapBurst && s.alpha > 0.4);
+    if (burstParticles.length >= 2) {
+      ctx.save();
+      for (let i = 0; i < Math.min(burstParticles.length, 14); i++) {
+        for (let j = i + 1; j < Math.min(burstParticles.length, 14); j++) {
+          const dx = burstParticles[i].x - burstParticles[j].x;
+          const dy = burstParticles[i].y - burstParticles[j].y;
+          const dist = Math.hypot(dx, dy);
+          if (dist < 65) {
+            const lineAlpha = (1 - dist / 65) * 0.35 * Math.min(burstParticles[i].alpha, burstParticles[j].alpha);
+            ctx.strokeStyle = "#fff2b2";
+            ctx.globalAlpha = lineAlpha;
+            ctx.lineWidth = 0.75;
+            ctx.beginPath();
+            ctx.moveTo(burstParticles[i].x, burstParticles[i].y);
+            ctx.lineTo(burstParticles[j].x, burstParticles[j].y);
+            ctx.stroke();
+          }
+        }
+      }
+      ctx.restore();
+    }
+
+    // Render and update individual sparkles
     for (let i = sparkles.length - 1; i >= 0; i--) {
       const s = sparkles[i];
 
@@ -228,17 +295,18 @@
       s.rotation += s.rotSpeed;
       s.twinklePhase += 0.08;
 
-      if (s.isBurst) {
-        s.vx *= 0.96;
-        s.vy += 0.08; // Gravity
+      if (s.isTapBurst) {
+        s.vx *= 0.94; // Smooth physics drag deceleration
+        s.vy *= 0.94;
+        s.vy += 0.06; // Gentle gravity
         s.alpha -= s.decay;
       } else {
-        // Natural swaying drift
+        // Natural gentle swaying drift for ambient dusting
         s.x += Math.sin(s.y / 30) * 0.35;
         if (s.y > H + 10) s.alpha = 0;
       }
 
-      // Dynamic twinkle modulation
+      // Shimmer / twinkle modulation
       const currentAlpha = s.alpha * (0.7 + 0.3 * Math.sin(s.twinklePhase));
 
       if (s.alpha <= 0) {
