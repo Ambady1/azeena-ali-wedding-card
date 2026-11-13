@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Monsieur+La+Doulaise&family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=10">
+<link rel="stylesheet" href="style.css?v=11">
 </head>
 <body class="locked">
 <canvas id="petals" aria-hidden="true"></canvas>
@@ -53,7 +53,53 @@
       </div>
     </h1>
   </div>
+
+  <div id="scrollCue" class="scroll-cue" aria-hidden="true">
+    <span class="scroll-text">Scroll</span>
+    <span class="scroll-arrow">&darr;</span>
+  </div>
 </main>
-<script src="script.js?v=10"></script>
+
+<!-- Event details: scratch-to-reveal date and countdown -->
+<section id="eventDetails" class="event-details" aria-hidden="true">
+  <div class="reveal-block" data-reveal>
+    <p class="scratch-title">Scratch to Reveal Date</p>
+
+    <div class="scratch-card" id="scratchCard">
+      <div class="scratch-reveal">
+        <div class="scratch-names">Azeena &amp; Ali</div>
+        <div class="scratch-divider" aria-hidden="true"></div>
+        <div class="scratch-date">Sunday, 17 January 2027</div>
+        <div class="scratch-time">11:30 AM</div>
+      </div>
+      <canvas id="scratchCanvas" aria-label="Scratch to reveal the wedding date"></canvas>
+      <div class="scratch-hand" aria-hidden="true">&#9995;&#65039;</div>
+    </div>
+  </div>
+
+  <div class="reveal-block countdown-block" data-reveal>
+    <h2 class="countdown-title">Counting Down to Forever</h2>
+    <div class="countdown" id="countdown" role="timer" aria-label="Countdown to the wedding">
+      <div class="count-unit">
+        <span id="countDays" class="count-value">00</span>
+        <span class="count-label">Days</span>
+      </div>
+      <div class="count-unit">
+        <span id="countHours" class="count-value">00</span>
+        <span class="count-label">Hours</span>
+      </div>
+      <div class="count-unit">
+        <span id="countMinutes" class="count-value">00</span>
+        <span class="count-label">Minutes</span>
+      </div>
+      <div class="count-unit">
+        <span id="countSeconds" class="count-value">00</span>
+        <span class="count-label">Seconds</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script src="script.js?v=11"></script>
 </body>
 </html>

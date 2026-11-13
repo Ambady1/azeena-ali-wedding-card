@@ -6,6 +6,8 @@
   const brideFirst = $("brideFirst"), brideLast = $("brideLast");
   const lineAnd = $("lineAnd");
   const groomFirst = $("groomFirst"), groomLast = $("groomLast");
+  const scrollCue = $("scrollCue");
+  const eventDetails = $("eventDetails");
 
   let isMuted = true;
 
@@ -66,6 +68,12 @@
     await typeText(groomFirst, "Ali", TYPING_SPEED);
     await new Promise((r) => setTimeout(r, 180));
     await typeText(groomLast, "Shamsudheen", TYPING_SPEED);
+
+    // Show the scroll direction 4 seconds after the names are fully shown.
+    setTimeout(() => {
+      scrollCue.classList.add("show");
+      eventDetails.removeAttribute("aria-hidden");
+    }, 4000);
   }
 
   function transitionToNamesPage() {
@@ -330,4 +338,215 @@
   });
 
   loop();
+
+  // Reveal event-detail blocks one by one as the guest scrolls.
+  const revealBlocks = document.querySelectorAll("[data-reveal]");
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("revealed");
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.28 });
+
+  revealBlocks.forEach((block) => revealObserver.observe(block));
+
+  // Scratch-to-reveal wedding date card
+  const scratchCanvas = $("scratchCanvas");
+  const scratchCard = $("scratchCard");
+  const scratchCtx = scratchCanvas.getContext("2d");
+  let scratchReady = false;
+  let isScratching = false;
+  let lastScratchX = null;
+  let lastScratchY = null;
+  let revealChecked = false;
+
+  function setupScratchCanvas() {
+    const rect = scratchCanvas.getBoundingClientRect();
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+    scratchCanvas.width = Math.max(1, Math.round(rect.width * dpr));
+    scratchCanvas.height = Math.max(1, Math.round(rect.height * dpr));
+    scratchCtx.scale(dpr, dpr);
+
+    const w = rect.width;
+    const h = rect.height;
+
+    // Gold foil base
+    const foil = scratchCtx.createLinearGradient(0, 0, w, h);
+    foil.addColorStop(0, "#8f651b");
+    foil.addColorStop(0.28, "#d4af37");
+    foil.addColorStop(0.5, "#fff3cf");
+    foil.addColorStop(0.72, "#c99a2c");
+    foil.addColorStop(1, "#7a5411");
+    scratchCtx.fillStyle = foil;
+    scratchCtx.fillRect(0, 0, w, h);
+
+    // Damask-inspired gold scrollwork
+    scratchCtx.globalAlpha = 0.24;
+    scratchCtx.strokeStyle = "#5c3d08";
+    scratchCtx.lineWidth = 1.1;
+
+    const cell = Math.max(34, w / 8);
+    for (let y = -cell; y < h + cell; y += cell) {
+      for (let x = -cell; x < w + cell; x += cell) {
+        scratchCtx.beginPath();
+        scratchCtx.arc(x + cell / 2, y + cell / 2, cell * 0.27, 0, Math.PI * 2);
+        scratchCtx.stroke();
+
+        scratchCtx.beginPath();
+        scratchCtx.arc(x, y, cell * 0.15, 0, Math.PI * 2);
+        scratchCtx.stroke();
+
+        scratchCtx.beginPath();
+        scratchCtx.moveTo(x, y + cell / 2);
+        scratchCtx.quadraticCurveTo(x + cell / 2, y, x + cell, y + cell / 2);
+        scratchCtx.stroke();
+      }
+    }
+
+    // Baroque corner flourishes
+    scratchCtx.globalAlpha = 0.55;
+    scratchCtx.strokeStyle = "#fff3cf";
+    scratchCtx.lineWidth = 2;
+    const corners = [
+      [16, 16, 1, 1],
+      [w - 16, 16, -1, 1],
+      [16, h - 16, 1, -1],
+      [w - 16, h - 16, -1, -1]
+    ];
+
+    corners.forEach(([cx, cy, sx, sy]) => {
+      scratchCtx.beginPath();
+      scratchCtx.moveTo(cx, cy + sy * 34);
+      scratchCtx.quadraticCurveTo(cx, cy, cx + sx * 34, cy);
+      scratchCtx.stroke();
+
+      scratchCtx.beginPath();
+      scratchCtx.arc(cx + sx * 13, cy + sy * 13, 5, 0, Math.PI * 2);
+      scratchCtx.stroke();
+    });
+
+    scratchCtx.globalAlpha = 1;
+    scratchReady = true;
+  }
+
+  function getScratchPoint(event) {
+    const rect = scratchCanvas.getBoundingClientRect();
+    const touch = event.touches ? event.touches[0] : event;
+    return {
+      x: touch.clientX - rect.left,
+      y: touch.clientY - rect.top
+    };
+  }
+
+  function scratchAt(x, y) {
+    if (!scratchReady || scratchCanvas.classList.contains("revealed")) return;
+
+    scratchCtx.globalCompositeOperation = "destination-out";
+    scratchCtx.lineWidth = 38;
+    scratchCtx.lineCap = "round";
+    scratchCtx.lineJoin = "round";
+
+    scratchCtx.beginPath();
+    scratchCtx.moveTo(x, y);
+    scratchCtx.lineTo(x + 0.01, y + 0.01);
+    scratchCtx.stroke();
+
+    if (lastScratchX !== null && lastScratchY !== null) {
+      scratchCtx.beginPath();
+      scratchCtx.moveTo(lastScratchX, lastScratchY);
+      scratchCtx.lineTo(x, y);
+      scratchCtx.stroke();
+    }
+
+    scratchCtx.globalCompositeOperation = "source-over";
+    lastScratchX = x;
+    lastScratchY = y;
+    checkScratchProgress();
+  }
+
+  function checkScratchProgress() {
+    if (revealChecked) return;
+
+    const { width, height } = scratchCanvas;
+    const data = scratchCtx.getImageData(0, 0, width, height).data;
+    let cleared = 0;
+    let total = 0;
+
+    for (let i = 3; i < data.length; i += 32) {
+      total++;
+      if (data[i] < 40) cleared++;
+    }
+
+    if (total && cleared / total > 0.45) {
+      revealChecked = true;
+      scratchCanvas.classList.add("revealed");
+      scratchCard.classList.add("scratched");
+      sparkleBurst(
+        scratchCard.getBoundingClientRect().left + scratchCard.offsetWidth / 2,
+        scratchCard.getBoundingClientRect().top + scratchCard.offsetHeight / 2,
+        34
+      );
+    }
+  }
+
+  function startScratch(event) {
+    isScratching = true;
+    const point = getScratchPoint(event);
+    scratchAt(point.x, point.y);
+  }
+
+  function moveScratch(event) {
+    if (!isScratching) return;
+    event.preventDefault();
+    const point = getScratchPoint(event);
+    scratchAt(point.x, point.y);
+  }
+
+  function endScratch() {
+    isScratching = false;
+    lastScratchX = null;
+    lastScratchY = null;
+  }
+
+  scratchCanvas.addEventListener("pointerdown", startScratch);
+  scratchCanvas.addEventListener("pointermove", moveScratch);
+  window.addEventListener("pointerup", endScratch);
+  window.addEventListener("pointercancel", endScratch);
+  window.addEventListener("resize", () => {
+    if (!scratchCanvas.classList.contains("revealed")) {
+      scratchReady = false;
+      revealChecked = false;
+      setupScratchCanvas();
+    }
+  });
+
+  // Initialize the scratch layer once it has layout.
+  requestAnimationFrame(setupScratchCanvas);
+
+  // Real-time countdown to the Nikkah: 17 January 2027, 11:30 AM local time.
+  const weddingDate = new Date(2027, 0, 17, 11, 30, 0);
+  const daysEl = $("countDays");
+  const hoursEl = $("countHours");
+  const minutesEl = $("countMinutes");
+  const secondsEl = $("countSeconds");
+
+  function pad(value) {
+    return String(value).padStart(2, "0");
+  }
+
+  function updateCountdown() {
+    const diff = Math.max(0, weddingDate.getTime() - Date.now());
+    const totalSeconds = Math.floor(diff / 1000);
+
+    daysEl.textContent = pad(Math.floor(totalSeconds / 86400));
+    hoursEl.textContent = pad(Math.floor((totalSeconds % 86400) / 3600));
+    minutesEl.textContent = pad(Math.floor((totalSeconds % 3600) / 60));
+    secondsEl.textContent = pad(totalSeconds % 60);
+  }
+
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
 })();
