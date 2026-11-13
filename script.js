@@ -18,7 +18,13 @@
     animVideo.muted = isMuted;
     loveAudio.muted = isMuted;
     soundBtn.innerHTML = isMuted ? "&#128263; Tap for Sound" : "&#128266; Sound On";
-    if (!isMuted) video.play().catch(() => {});
+    if (!isMuted) {
+      // If user toggles sound during playback, start audio/video
+      video.play().catch(() => {});
+      if (intro.classList.contains("open") && loveAudio.paused) {
+        loveAudio.play().catch(() => {});
+      }
+    }
   });
 
   function typeText(element, text, speed) {
@@ -64,12 +70,7 @@
   }
 
   function transitionToNamesPage() {
-    // 1. Instantly fire love.MP3 (no waiting for fade transition)
-    loveAudio.currentTime = 0;
-    loveAudio.muted = isMuted;
-    loveAudio.play().catch(() => {});
-
-    // 2. Seamlessly display names card
+    // Seamlessly transition visuals while love.mp3 continues playing uninterrupted
     animSection.classList.add("fade-out");
     card.classList.add("show");
     card.removeAttribute("aria-hidden");
@@ -89,11 +90,13 @@
     intro.classList.add("open");
     document.body.classList.remove("locked");
 
-    // Prime loveAudio immediately on user tap gesture to unlock mobile autoplay
-    loveAudio.load();
+    // 1. Immediately play love.mp3 on user tap gesture (uninterrupted across scenes)
+    loveAudio.currentTime = 0;
+    loveAudio.muted = isMuted;
+    loveAudio.play().catch(() => {});
 
-    // Reveal intermediate animation
-    animVideo.muted = isMuted;
+    // 2. Play muted/detached animation.mp4 simultaneously
+    animVideo.muted = true;
     animSection.style.display = "block";
     requestAnimationFrame(() => {
       animSection.classList.add("active");
@@ -102,14 +105,13 @@
     const playPromise = animVideo.play();
     if (playPromise !== undefined) {
       playPromise.catch(() => {
-        // Fallback: if browser blocks unmuted playback, play muted
-        animVideo.muted = true;
-        animVideo.play().catch(transitionToNamesPage);
+        transitionToNamesPage();
       });
     }
 
     setTimeout(() => { try { video.pause(); } catch (_) {} }, 500);
 
+    // When animation.mp4 finishes, transition to names page while audio continues uninterrupted
     let handled = false;
     function onAnimComplete() {
       if (handled) return;
