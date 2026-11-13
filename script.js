@@ -145,8 +145,8 @@
 
   function createSparkle(originX, originY, isTapBurst) {
     const angle = Math.random() * Math.PI * 2;
-    // Radial burst with high launch velocity
-    const speed = isTapBurst ? Math.random() * 8 + 3 : Math.random() * 0.9 + 0.3;
+    // Slower, calmer radial drift for tap bursts
+    const speed = isTapBurst ? Math.random() * 2.4 + 0.8 : Math.random() * 0.9 + 0.3;
     const color = goldPalette[(Math.random() * goldPalette.length) | 0];
 
     return {
@@ -156,11 +156,11 @@
       vy: isTapBurst ? Math.sin(angle) * speed : Math.random() * 0.9 + 0.4,
       size: Math.random() * 5 + 3,
       rotation: Math.random() * Math.PI,
-      rotSpeed: (Math.random() - 0.5) * 0.12,
+      rotSpeed: (Math.random() - 0.5) * 0.05,
       isStar: Math.random() > 0.3,
       color: color,
       alpha: 1,
-      decay: isTapBurst ? Math.random() * 0.014 + 0.009 : 0.003,
+      decay: isTapBurst ? Math.random() * 0.005 + 0.003 : 0.003,
       twinklePhase: Math.random() * Math.PI * 2,
       isTapBurst: isTapBurst
     };
@@ -169,8 +169,8 @@
   function sparkleBurst(x, y, count) {
     if (reduce) return;
     const n = count || 32;
-    // Add glowing shockwave ring on tap
-    rings.push({ x: x, y: y, r: 4, maxR: 70, alpha: 0.9 });
+    // Softer, slower expanding shockwave ring on tap
+    rings.push({ x: x, y: y, r: 4, maxR: 70, alpha: 0.65 });
     for (let i = 0; i < n; i++) {
       sparkles.push(createSparkle(x, y, true));
     }
@@ -244,8 +244,8 @@
     // Render expanding shockwave rings from tap points
     for (let i = rings.length - 1; i >= 0; i--) {
       const ring = rings[i];
-      ring.r += 3.2;
-      ring.alpha -= 0.038;
+      ring.r += 1.4;
+      ring.alpha -= 0.016;
       if (ring.alpha <= 0) {
         rings.splice(i, 1);
         continue;
@@ -253,7 +253,7 @@
       ctx.save();
       ctx.globalAlpha = Math.max(0, ring.alpha);
       ctx.strokeStyle = "#fadb7f";
-      ctx.lineWidth = 1.4;
+      ctx.lineWidth = 1.1;
       ctx.shadowColor = "rgba(250, 219, 127, 0.85)";
       ctx.shadowBlur = 8;
       ctx.beginPath();
@@ -293,12 +293,12 @@
       s.x += s.vx;
       s.y += s.vy;
       s.rotation += s.rotSpeed;
-      s.twinklePhase += 0.08;
+      s.twinklePhase += 0.05;
 
       if (s.isTapBurst) {
-        s.vx *= 0.94; // Smooth physics drag deceleration
-        s.vy *= 0.94;
-        s.vy += 0.06; // Gentle gravity
+        s.vx *= 0.975; // Gentle, longer-lasting drag deceleration
+        s.vy *= 0.975;
+        s.vy += 0.015; // Very gentle gravity
         s.alpha -= s.decay;
       } else {
         // Natural gentle swaying drift for ambient dusting
