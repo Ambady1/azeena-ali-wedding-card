@@ -54,16 +54,16 @@ body.locked{overflow:hidden}
 
 /* Centered writing column keeps the scratch card and countdown balanced
    within the open writing area of the image. */
-.writing-area{position:relative;z-index:1;width:min(88vw,420px);padding:clamp(56px,14vh,120px) 0;display:flex;flex-direction:column;align-items:center;gap:56px;text-align:center}
+.writing-area{position:relative;z-index:1;width:min(88vw,420px);padding:clamp(56px,20vh,300px) 0;display:flex;flex-direction:column;align-items:center;gap:56px;text-align:center}
 
 .reveal-block{position:relative;z-index:1;width:100%;text-align:center;opacity:0;transform:translateY(34px);transition:opacity .9s ease,transform .9s cubic-bezier(.2,.7,.2,1)}
 .reveal-block.revealed{opacity:1;transform:translateY(0)}
 
 /* Scratch card */
-.scratch-title{margin-bottom:70px;font-family:'Cinzel',serif;font-size:clamp(.95rem,3.8vw,1.12rem);font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:var(--maroon-deep);text-shadow:0 1px 0 rgba(255,243,207,.65)}
+.scratch-title{margin-bottom:18px;font-family:'Cinzel',serif;font-size:clamp(.95rem,3.8vw,1.12rem);font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:var(--maroon-deep);text-shadow:0 1px 0 rgba(255,243,207,.65)}
 
 /* Smaller square scratch card with a golden champagne reveal */
-.scratch-card{position:relative;width:min(54vw,220px);aspect-ratio:1/1;margin:0 auto;border-radius:22px;overflow:hidden;background:
+.scratch-card{position:relative;width:min(64vw,260px);aspect-ratio:1/1;margin:0 auto;border-radius:22px;overflow:hidden;background:
   radial-gradient(circle at 22% 18%,rgba(255,255,255,.38),transparent 34%),
   radial-gradient(circle at 78% 82%,rgba(255,214,122,.32),transparent 38%),
   linear-gradient(145deg,#8f651b,#d4af37 48%,#7a5411);
@@ -92,7 +92,7 @@ background-size:34px 34px,34px 34px,46px 46px}
 .scratch-hand{position:absolute;right:14px;bottom:10px;z-index:3;font-size:1.25rem;color:rgba(59,3,12,.75);text-shadow:0 1px 6px rgba(255,243,207,.7);animation:handFloat 2.1s ease-in-out infinite;pointer-events:none;transition:opacity .4s ease}
 .scratch-card.scratched .scratch-hand{opacity:0}
 
-@keyframes handFloat{0%,100%{transform:translate(0,0) rotate(-8deg)}50%{transform:translate(-7px,-7px) rotate(4px)}}
+@keyframes handFloat{0%,100%{transform:translate(0,0) rotate(-8deg)}50%{transform:translate(-7px,-7px) rotate(4deg)}}
 
 /* Countdown */
 .countdown-title{font-family:'Cinzel',serif;font-size:clamp(1rem,4.2vw,1.3rem);font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--maroon-deep);text-shadow:0 1px 0 rgba(255,243,207,.6)}
@@ -102,7 +102,33 @@ background-size:34px 34px,34px 34px,46px 46px}
 .count-value{font-family:'Cinzel',serif;font-size:clamp(1.25rem,5.4vw,1.8rem);font-weight:700;line-height:1;color:var(--maroon-deep);font-variant-numeric:tabular-nums}
 .count-label{font-family:'Cinzel',serif;font-size:.56rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-deep)}
 
+/* Venue details over writingspace.png */
+.venue-details{position:relative;z-index:2;min-height:100dvh;padding:0;display:flex;align-items:center;justify-content:center;background:url('Resources/writingspace.png') center/cover no-repeat}
+
+.venue-area{gap:34px;padding:clamp(48px,12vh,160px) 0}
+
+.venue-kicker{font-family:'Cinzel',serif;font-size:clamp(.8rem,3.4vw,1rem);font-weight:800;letter-spacing:.32em;text-transform:uppercase;color:var(--gold-deep);text-shadow:0 1px 0 rgba(255,243,207,.7)}
+
+.venue-name{font-family:'Cinzel',serif;font-size:clamp(1.7rem,7.5vw,2.5rem);font-weight:800;line-height:1.15;color:var(--maroon-deep);text-shadow:0 1px 0 rgba(255,243,207,.8),0 3px 16px rgba(59,3,12,.16)}
+
+.venue-address{margin-top:10px;font-family:'Playfair Display',Georgia,serif;font-style:italic;font-size:clamp(1rem,4.2vw,1.2rem);line-height:1.5;color:rgba(59,3,12,.85)}
+
+.venue-actions{display:flex;flex-direction:column;align-items:center;gap:14px;width:100%;max-width:300px;margin:0 auto}
+
+.venue-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:15px 20px;border-radius:999px;background:linear-gradient(160deg,#fffaf0,#f6e6bd);border:1px solid rgba(143,101,27,.6);color:var(--maroon-deep);font-family:'Cinzel',serif;font-size:clamp(.78rem,3.2vw,.92rem);font-weight:800;letter-spacing:.16em;text-transform:uppercase;text-decoration:none;box-shadow:0 12px 26px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.95);transition:transform .3s ease,box-shadow .3s ease}
+
+.venue-btn:hover,.venue-btn:focus-visible{transform:translateY(-3px);box-shadow:0 16px 32px rgba(0,0,0,.32),inset 0 1px 0 rgba(255,255,255,.95)}
+
+.venue-btn-icon{font-size:1.05rem}
+
+/* Slow bottom-to-top docking reveal for venue content */
+.venue-details .reveal-block{opacity:0;transform:translateY(90px);transition:opacity 1.35s ease,transform 1.35s cubic-bezier(.2,.7,.2,1)}
+
+.venue-details .reveal-block.revealed{opacity:1;transform:translateY(0)}
+
+.venue-details .dock-2{transition-delay:.4s}
+
 @keyframes blink{50%{opacity:0}}
 @keyframes promptPulse{0%,100%{opacity:.85;transform:translateY(0)}50%{opacity:1;transform:translateY(-3px)}}
-@media(max-width:360px){.countdown{gap:6px}.count-unit{padding:11px 3px;border-radius:14px}.scratch-card{width:min(70vw,240px)}}
+@media(max-width:360px){.countdown{gap:6px}.count-unit{padding:11px 3px;border-radius:14px}.scratch-card{width:min(70vw,240px)}.venue-btn{padding:13px 16px}}
 @media(prefers-reduced-motion:reduce){*{animation-duration:.01s!important;transition-duration:.01s!important}}
