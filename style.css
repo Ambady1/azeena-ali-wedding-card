@@ -60,10 +60,10 @@ body.locked{overflow:hidden}
 .reveal-block.revealed{opacity:1;transform:translateY(0)}
 
 /* Scratch card */
-.scratch-title{margin-bottom:18px;font-family:'Cinzel',serif;font-size:clamp(.95rem,3.8vw,1.12rem);font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:var(--maroon-deep);text-shadow:0 1px 0 rgba(255,243,207,.65)}
+.scratch-title{margin-bottom:70px;font-family:'Cinzel',serif;font-size:clamp(.95rem,3.8vw,1.12rem);font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:var(--maroon-deep);text-shadow:0 1px 0 rgba(255,243,207,.65)}
 
 /* Smaller square scratch card with a golden champagne reveal */
-.scratch-card{position:relative;width:min(64vw,260px);aspect-ratio:1/1;margin:0 auto;border-radius:22px;overflow:hidden;background:
+.scratch-card{position:relative;width:min(54vw,220px);aspect-ratio:1/1;margin:0 auto;border-radius:22px;overflow:hidden;background:
   radial-gradient(circle at 22% 18%,rgba(255,255,255,.38),transparent 34%),
   radial-gradient(circle at 78% 82%,rgba(255,214,122,.32),transparent 38%),
   linear-gradient(145deg,#8f651b,#d4af37 48%,#7a5411);
