@@ -49,8 +49,11 @@ body.locked{overflow:hidden}
 
 @keyframes scrollArrow{0%,100%{transform:translateY(0);opacity:.7}50%{transform:translateY(9px);opacity:1}}
 
-/* Event details displayed over writingspace.png */
-.event-details{position:relative;z-index:2;min-height:100dvh;padding:0;display:flex;align-items:center;justify-content:center;background:url('Resources/writingspace.png') center/cover no-repeat}
+/* Static writingspace background shared by event and venue details */
+.writing-bg{position:fixed;inset:0;z-index:1;background:url('Resources/writingspace.png') center/cover no-repeat;pointer-events:none}
+
+/* Event details over the static writingspace background */
+.event-details{position:relative;z-index:2;min-height:100dvh;padding:0;display:flex;align-items:center;justify-content:center;background:transparent}
 
 /* Centered writing column keeps the scratch card and countdown balanced
    within the open writing area of the image. */
@@ -102,8 +105,13 @@ background-size:34px 34px,34px 34px,46px 46px}
 .count-value{font-family:'Cinzel',serif;font-size:clamp(1.25rem,5.4vw,1.8rem);font-weight:700;line-height:1;color:var(--maroon-deep);font-variant-numeric:tabular-nums}
 .count-label{font-family:'Cinzel',serif;font-size:.56rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-deep)}
 
-/* Venue details over writingspace.png */
-.venue-details{position:relative;z-index:2;min-height:100dvh;padding:0;display:flex;align-items:center;justify-content:center;background:url('Resources/writingspace.png') center/cover no-repeat}
+/* Slow upward fade for event details as venue details arrive */
+.event-details .writing-area{transition:opacity 1.35s ease,transform 1.35s cubic-bezier(.2,.7,.2,1)}
+
+.event-details.leaving .writing-area{opacity:0;transform:translateY(-70px)}
+
+/* Venue details over the same static writingspace background */
+.venue-details{position:relative;z-index:2;min-height:100dvh;padding:0;display:flex;align-items:center;justify-content:center;background:transparent}
 
 .venue-area{gap:34px;padding:clamp(48px,12vh,160px) 0}
 

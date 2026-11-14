@@ -9,6 +9,7 @@
   const groomFirst = $("groomFirst"), groomLast = $("groomLast");
   const scrollCue = $("scrollCue");
   const eventDetails = $("eventDetails");
+  const venueDetails = $("venueDetails");
 
   let isMuted = true;
 
@@ -362,6 +363,20 @@
   }, { threshold: 0.28 });
 
   revealBlocks.forEach((block) => revealObserver.observe(block));
+
+  // As the venue section arrives, slowly fade and lift the event details upward.
+  const venueObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        eventDetails.classList.add("leaving");
+        venueDetails.removeAttribute("aria-hidden");
+      } else {
+        eventDetails.classList.remove("leaving");
+      }
+    });
+  }, { threshold: 0.35 });
+
+  venueObserver.observe(venueDetails);
 
   // Scratch-to-reveal wedding date card
   const scratchCanvas = $("scratchCanvas");

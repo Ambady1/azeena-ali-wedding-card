@@ -16,7 +16,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Monsieur+La+Doulaise&family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=16">
+<link rel="stylesheet" href="style.css?v=17">
 </head>
 <body class="locked">
 <canvas id="petals" aria-hidden="true"></canvas>
@@ -65,7 +65,10 @@
   </div>
 </main>
 
-<!-- Event details over writingspace.png -->
+<!-- Static writingspace background shared by event and venue details -->
+<div class="writing-bg" aria-hidden="true"></div>
+
+<!-- Event details over static writingspace.png -->
 <section id="eventDetails" class="event-details" aria-hidden="true">
   <div class="writing-area">
     <div class="reveal-block" data-reveal>
@@ -107,7 +110,7 @@
   </div>
 </section>
 
-<!-- Venue details over writingspace.png -->
+<!-- Venue details over the same static writingspace.png -->
 <section id="venueDetails" class="venue-details" aria-hidden="true">
   <div class="writing-area venue-area">
     <div class="reveal-block venue-block dock-1" data-reveal>
@@ -129,6 +132,6 @@
   </div>
 </section>
 
-<script src="script.js?v=16"></script>
+<script src="script.js?v=17"></script>
 </body>
 </html>
