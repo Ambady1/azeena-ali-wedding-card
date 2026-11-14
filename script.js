@@ -26,7 +26,8 @@
     soundBtn.innerHTML = isMuted ? "&#128263; Tap for Sound" : "&#128266; Sound On";
     if (!isMuted) {
       video.play().catch(() => {});
-      if (firstpageAudio.paused) {
+      // firstpage.mp3 loops only while the intro screen is still showing.
+      if (!intro.classList.contains("open") && firstpageAudio.paused) {
         firstpageAudio.play().catch(() => {});
       }
       if (intro.classList.contains("open") && loveAudio.paused) {
@@ -103,11 +104,8 @@
     intro.classList.add("open");
     document.body.classList.remove("locked");
 
-    // Keep the intro audio looping alongside the intro video.
-    firstpageAudio.muted = isMuted;
-    if (firstpageAudio.paused) {
-      firstpageAudio.play().catch(() => {});
-    }
+    // Stop the intro audio as soon as the guest opens the invitation.
+    firstpageAudio.pause();
 
     loveAudio.currentTime = 0;
     loveAudio.muted = isMuted;
