@@ -2,6 +2,7 @@
   const $ = (id) => document.getElementById(id);
   const card = $("card"), intro = $("intro"), video = $("introVideo"), soundBtn = $("soundToggle");
   const animSection = $("animSection"), animVideo = $("animVideo");
+  const firstpageAudio = $("firstpageAudio");
   const loveAudio = $("loveAudio");
   const brideFirst = $("brideFirst"), brideLast = $("brideLast");
   const lineAnd = $("lineAnd");
@@ -12,16 +13,22 @@
   let isMuted = true;
 
   video.play().catch(() => {});
+  firstpageAudio.muted = isMuted;
+  firstpageAudio.play().catch(() => {});
 
   soundBtn.addEventListener("click", (e) => {
     e.stopPropagation();
     isMuted = !isMuted;
     video.muted = isMuted;
     animVideo.muted = isMuted;
+    firstpageAudio.muted = isMuted;
     loveAudio.muted = isMuted;
     soundBtn.innerHTML = isMuted ? "&#128263; Tap for Sound" : "&#128266; Sound On";
     if (!isMuted) {
       video.play().catch(() => {});
+      if (firstpageAudio.paused) {
+        firstpageAudio.play().catch(() => {});
+      }
       if (intro.classList.contains("open") && loveAudio.paused) {
         loveAudio.play().catch(() => {});
       }
@@ -95,6 +102,12 @@
     if (intro.classList.contains("open")) return;
     intro.classList.add("open");
     document.body.classList.remove("locked");
+
+    // Keep the intro audio looping alongside the intro video.
+    firstpageAudio.muted = isMuted;
+    if (firstpageAudio.paused) {
+      firstpageAudio.play().catch(() => {});
+    }
 
     loveAudio.currentTime = 0;
     loveAudio.muted = isMuted;
