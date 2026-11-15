@@ -35,7 +35,18 @@
     if (!active() || busy) return;
     const i = index(), y = window.scrollY;
     const beginning = top(pages[i]);
-    const end = Math.max(beginning, beginning + pages[i].offsetHeight - height());
+    let end = Math.max(beginning, beginning + pages[i].offsetHeight - height());
+    if (direction > 0 && pages[i].id === 'eventDetails') {
+      const countdown = pages[i].querySelector('.countdown-block');
+      if (countdown) {
+        // Layout coordinates exclude reveal-animation transforms and trailing padding.
+        let bottom = countdown.offsetHeight;
+        for (let node = countdown; node; node = node.offsetParent) bottom += node.offsetTop;
+        const viewportBottom = window.visualViewport
+          ? window.visualViewport.offsetTop + window.visualViewport.height : height();
+        end = Math.max(beginning, Math.min(end, bottom - viewportBottom));
+      }
+    }
     if (direction > 0) {
       if (y < end - 3) moveTo(Math.min(end, y + height() * .8));
       else if (i < pages.length - 1) moveTo(top(pages[i + 1]));
