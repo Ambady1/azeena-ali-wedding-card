@@ -1,6 +1,15 @@
 (() => {
-  const pages = ['card', 'eventDetails', 'venueDetails'].map(id => document.getElementById(id));
+  const pages = ['card', 'familyDetails', 'eventDetails', 'venueDetails'].map(id => document.getElementById(id));
   if (pages.some(page => !page)) return;
+  const family = document.getElementById('familyDetails');
+  new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) family.removeAttribute('aria-hidden');
+    });
+  }, { threshold: .1 }).observe(family);
+  new IntersectionObserver(entries => {
+    entries.forEach(entry => family.classList.toggle('leaving', entry.isIntersecting));
+  }, { threshold: .35 }).observe(document.getElementById('eventDetails'));
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
   let start = null, busy = false, frame = 0, wheelTimer = 0, wheelTotal = 0;
   const height = () => document.documentElement.clientHeight;
@@ -36,8 +45,8 @@
     const i = index(), y = window.scrollY;
     const beginning = top(pages[i]);
     let end = Math.max(beginning, beginning + pages[i].offsetHeight - height());
-    if (direction > 0 && pages[i].id === 'eventDetails') {
-      const countdown = pages[i].querySelector('.countdown-block');
+    if (direction > 0 && ['eventDetails', 'familyDetails'].includes(pages[i].id)) {
+      const countdown = pages[i].querySelector('.countdown-block, .family-end');
       if (countdown) {
         // Layout coordinates exclude reveal-animation transforms and trailing padding.
         let bottom = countdown.offsetHeight;

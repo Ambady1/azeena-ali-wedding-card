@@ -17,6 +17,18 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Monsieur+La+Doulaise&family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css?v=18">
+<style>
+.family-details .family-area{width:min(84vw,420px);gap:clamp(14px,3vh,28px);padding:clamp(32px,6vh,64px) 0;transition:opacity 1.35s ease,transform 1.35s cubic-bezier(.2,.7,.2,1)}
+.family-details.leaving .family-area{opacity:0;transform:translateY(-70px)}
+.family-details .family-name{font-family:'Cinzel',serif;font-size:clamp(1.2rem,5.2vw,1.65rem);font-weight:700;line-height:1.3;color:var(--maroon-deep);overflow-wrap:anywhere}
+.family-details .family-role{margin:10px 0;font-family:'Cinzel',serif;font-size:.68rem;font-weight:700;letter-spacing:.2em;color:var(--gold-deep)}
+.family-details .family-parents{font-family:Georgia,serif;font-size:clamp(.95rem,3.8vw,1.1rem);line-height:1.55;color:var(--maroon-deep);overflow-wrap:anywhere}
+.family-details .family-address{margin-top:8px;font-family:Georgia,serif;font-size:clamp(.85rem,3.4vw,1rem);line-height:1.6;color:var(--maroon-deep);overflow-wrap:anywhere}
+.family-details .family-and{font-family:'Playfair Display',Georgia,serif;font-style:italic;font-size:1.15rem;color:var(--gold-deep)}
+.family-details .family-and{transition-delay:.2s}
+.family-details .family-end{transition-delay:.4s}
+@media(prefers-reduced-motion:reduce){.family-details .family-area,.family-details .reveal-block{transition-duration:.01s!important;transition-delay:0s!important}}
+</style>
 </head>
 <body class="locked">
 <canvas id="petals" aria-hidden="true"></canvas>
@@ -67,6 +79,25 @@
 
 <!-- Static writingspace background shared by event and venue details -->
 <div class="writing-bg" aria-hidden="true"></div>
+
+<!-- Family details share the fixed background and venue docking style. -->
+<section id="familyDetails" class="venue-details family-details" aria-hidden="true" aria-label="Our families">
+  <div class="writing-area family-area">
+    <div class="reveal-block" data-reveal>
+      <h2 class="family-name">Azeena Azeez</h2>
+      <p class="family-role">DAUGHTER OF</p>
+      <p class="family-parents">Mr. E K Abdul Azeez &amp; Mrs. Zeenath Azeez</p>
+      <p class="family-address">Ethiyil house, Chembarakky,<br>S. Vazhakulam, Aluva</p>
+    </div>
+    <p class="reveal-block family-and" data-reveal>and</p>
+    <div class="reveal-block family-end" data-reveal>
+      <h2 class="family-name">Ali Shamsudheen</h2>
+      <p class="family-role">SON OF</p>
+      <p class="family-parents">Mr. Shamsudheen P M &amp; Mrs. Khadeeja Shamsudheen</p>
+      <p class="family-address">Poovathumchalil house, Manary,<br>Paipra, Muvattupuzha</p>
+    </div>
+  </div>
+</section>
 
 <!-- Event details over static writingspace.png -->
 <section id="eventDetails" class="event-details" aria-hidden="true">
@@ -133,6 +164,6 @@
 </section>
 
 <script src="script.js?v=18"></script>
-<script src="page-navigation.js?v=1"></script>
+<script src="page-navigation.js?v=2"></script>
 </body>
 </html>
