@@ -70,6 +70,30 @@
       else if (i > 0) moveTo(Math.max(top(pages[i - 1]), top(pages[i - 1]) + pages[i - 1].offsetHeight - height()));
     }
   }
+  const arrowStyles = document.createElement('style');
+  arrowStyles.textContent = `
+    .page-next-cue{appearance:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;flex-shrink:0;min-width:64px;min-height:64px;padding:8px;margin:0 auto;border:0;background:transparent;color:var(--gold-deep);cursor:pointer;font-family:'Cinzel',serif;font-size:.68rem;font-weight:700;letter-spacing:.24em;text-transform:uppercase;text-shadow:0 1px 2px rgba(255,243,207,.8)}
+    .page-next-cue svg{display:block;width:32px;height:32px;overflow:visible;animation:pageNextBob 1.7s ease-in-out infinite;filter:drop-shadow(0 1px 2px rgba(143,101,27,.2))}
+    .page-next-cue:hover{color:var(--maroon-deep)}
+    .page-next-cue:focus-visible{outline:2px solid var(--gold-deep);outline-offset:4px;border-radius:12px}
+    @keyframes pageNextBob{0%,100%{transform:translateY(0);opacity:.7}50%{transform:translateY(7px);opacity:1}}
+    @media(prefers-reduced-motion:reduce){.page-next-cue svg{animation:none}}
+  `;
+  document.head.appendChild(arrowStyles);
+  pages.slice(1, -1).forEach((page, offset) => {
+    const next = pages[offset + 2];
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'page-next-cue';
+    button.setAttribute('aria-label', 'Continue to ' + ({eventDetails:'the date and countdown',venueDetails:'the venue',closingDetails:'Sharing Happiness'}[next.id]));
+    button.setAttribute('aria-controls', next.id);
+    button.innerHTML = '<span aria-hidden="true">Scroll</span><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3.5v16m0 0l-7-7m7 7l7-7" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    button.addEventListener('click', () => {
+      if (active() && !busy) moveTo(top(next));
+    });
+    const area = page.querySelector('.writing-area');
+    if (area) area.appendChild(button);
+  });
   document.addEventListener('touchstart', e => {
     start = active() && !excluded(e.target) && e.touches.length === 1
       ? { x: e.touches[0].clientX, y: e.touches[0].clientY } : null;
