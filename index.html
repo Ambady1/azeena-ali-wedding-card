@@ -16,6 +16,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Monsieur+La+Doulaise&family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css?v=18">
 <style>
 .family-details .family-area{width:min(84vw,420px);gap:clamp(14px,3vh,28px);padding:clamp(32px,6vh,64px) 0;transition:opacity 1.35s ease,transform 1.35s cubic-bezier(.2,.7,.2,1)}
@@ -28,6 +29,19 @@
 .family-details .family-and{transition-delay:.2s}
 .family-details .family-end{transition-delay:.4s}
 @media(prefers-reduced-motion:reduce){.family-details .family-area,.family-details .reveal-block{transition-duration:.01s!important;transition-delay:0s!important}}
+.closing-details .closing-area{width:min(84vw,440px);min-height:100dvh;justify-content:space-between;gap:clamp(16px,3vh,30px);padding:clamp(32px,6vh,64px) 0}
+.closing-details .closing-arabic{font-family:'Amiri','Noto Naskh Arabic','Traditional Arabic',serif;font-size:clamp(1.8rem,7.5vw,2.6rem);font-weight:400;font-style:normal;line-height:2;letter-spacing:normal;color:#513728;overflow:visible}
+.closing-details .closing-translation{margin-top:4px;font-family:'Playfair Display',Georgia,serif;font-size:clamp(1rem,4.2vw,1.2rem);font-weight:700;font-style:italic;line-height:1.6;color:#80624e}
+.closing-details .closing-reference{margin-top:12px;font-family:Arial,Helvetica,sans-serif;font-size:.65rem;font-weight:400;letter-spacing:.22em;line-height:1.7;color:#a28a63}
+.closing-details .closing-picture{display:flex;justify-content:center;transition-delay:.2s}
+.closing-details .closing-picture img{display:block;width:min(66vw,300px);height:clamp(140px,30svh,300px);max-width:100%;object-fit:contain}
+.closing-details .closing-contact{transition-delay:.4s;color:#513728}
+.closing-details .closing-sharing{font-family:'Playfair Display',Georgia,serif;font-size:clamp(1.3rem,5.4vw,1.7rem);font-weight:700;font-style:italic;line-height:1.35}
+.closing-details .closing-host{margin-top:9px;font-family:Georgia,serif;font-size:clamp(1rem,4vw,1.15rem);line-height:1.5}
+.closing-details .closing-phone{margin-top:7px;font-family:Arial,Helvetica,sans-serif;font-size:clamp(.78rem,3.1vw,.9rem);line-height:1.8;overflow-wrap:anywhere}
+.closing-details .closing-phone a{color:inherit;text-decoration:none}
+.closing-details .closing-phone a:focus-visible{outline:2px solid currentColor;outline-offset:3px}
+@media(prefers-reduced-motion:reduce){.closing-details .reveal-block{transition-duration:.01s!important;transition-delay:0s!important}}
 </style>
 </head>
 <body class="locked">
@@ -163,7 +177,25 @@
   </div>
 </section>
 
+<section id="closingDetails" class="venue-details closing-details" aria-hidden="true" aria-label="Sharing Happiness">
+  <div class="writing-area closing-area">
+    <div class="reveal-block closing-verse" data-reveal>
+      <p class="closing-arabic" lang="ar" dir="rtl">وَخَلَقْنَاكُمْ أَزْوَاجًا</p>
+      <p class="closing-translation">“And We created you in pairs”</p>
+      <p class="closing-reference">— AN-NABA | VERSE 8</p>
+    </div>
+    <div class="reveal-block closing-picture" data-reveal>
+      <img src="Resources/couple.png" alt="Couple" decoding="async">
+    </div>
+    <div class="reveal-block closing-contact" data-reveal>
+      <h2 class="closing-sharing">Sharing Happiness</h2>
+      <p class="closing-host">Anzeena Azeez</p>
+      <p class="closing-phone">Ph. <a href="tel:9349345335">9349345335</a>, <a href="tel:9387118303">9387118303</a></p>
+    </div>
+  </div>
+</section>
+
 <script src="script.js?v=18"></script>
-<script src="page-navigation.js?v=2"></script>
+<script src="page-navigation.js?v=3"></script>
 </body>
 </html>

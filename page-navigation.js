@@ -1,6 +1,12 @@
 (() => {
-  const pages = ['card', 'familyDetails', 'eventDetails', 'venueDetails'].map(id => document.getElementById(id));
+  const pages = ['card', 'familyDetails', 'eventDetails', 'venueDetails', 'closingDetails'].map(id => document.getElementById(id));
   if (pages.some(page => !page)) return;
+  const closing = document.getElementById('closingDetails');
+  new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) closing.removeAttribute('aria-hidden');
+    });
+  }, { threshold: .1 }).observe(closing);
   const family = document.getElementById('familyDetails');
   new IntersectionObserver(entries => {
     entries.forEach(entry => {
