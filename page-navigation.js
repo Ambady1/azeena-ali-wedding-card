@@ -52,10 +52,11 @@
     const beginning = top(pages[i]);
     let end = Math.max(beginning, beginning + pages[i].offsetHeight - height());
     if (direction > 0 && ['eventDetails', 'familyDetails'].includes(pages[i].id)) {
-      const countdown = pages[i].querySelector('.countdown-block, .family-end');
+      const cue = pages[i].querySelector('.page-next-cue');
+      const countdown = cue || pages[i].querySelector('.countdown-block, .family-end');
       if (countdown) {
         // Layout coordinates exclude reveal-animation transforms and trailing padding.
-        let bottom = countdown.offsetHeight;
+        let bottom = countdown.offsetHeight + (cue ? 16 : 0);
         for (let node = countdown; node; node = node.offsetParent) bottom += node.offsetTop;
         const viewportBottom = window.visualViewport
           ? window.visualViewport.offsetTop + window.visualViewport.height : height();
