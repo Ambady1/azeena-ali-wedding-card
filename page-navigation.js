@@ -52,12 +52,11 @@
     const beginning = top(pages[i]);
     let end = Math.max(beginning, beginning + pages[i].offsetHeight - height());
     if (direction > 0 && ['eventDetails', 'familyDetails'].includes(pages[i].id)) {
-      const cue = pages[i].querySelector('.page-next-cue');
-      const countdown = cue || pages[i].querySelector('.countdown-block, .family-end');
-      if (countdown) {
+      const contentEnd = pages[i].querySelector('.countdown-block, .family-end');
+      if (contentEnd) {
         // Layout coordinates exclude reveal-animation transforms and trailing padding.
-        let bottom = countdown.offsetHeight + (cue ? 16 : 0);
-        for (let node = countdown; node; node = node.offsetParent) bottom += node.offsetTop;
+        let bottom = contentEnd.offsetHeight;
+        for (let node = contentEnd; node; node = node.offsetParent) bottom += node.offsetTop;
         const viewportBottom = window.visualViewport
           ? window.visualViewport.offsetTop + window.visualViewport.height : height();
         end = Math.max(beginning, Math.min(end, bottom - viewportBottom));
@@ -71,17 +70,9 @@
       else if (i > 0) moveTo(Math.max(top(pages[i - 1]), top(pages[i - 1]) + pages[i - 1].offsetHeight - height()));
     }
   }
-  const arrowStyles = document.createElement('style');
-  arrowStyles.textContent = `
-    .page-next-cue{appearance:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;flex-shrink:0;min-width:64px;min-height:64px;padding:8px;margin:0 auto;border:0;background:transparent;color:var(--gold-deep);cursor:pointer;font-family:'Cinzel',serif;font-size:.68rem;font-weight:700;letter-spacing:.24em;text-transform:uppercase;text-shadow:0 1px 2px rgba(255,243,207,.8)}
-    .page-next-cue svg{display:block;width:32px;height:32px;overflow:visible;animation:pageNextBob 1.7s ease-in-out infinite;filter:drop-shadow(0 1px 2px rgba(143,101,27,.2))}
-    .page-next-cue:hover{color:var(--maroon-deep)}
-    .page-next-cue:focus-visible{outline:2px solid var(--gold-deep);outline-offset:4px;border-radius:12px}
-    @keyframes pageNextBob{0%,100%{transform:translateY(0);opacity:.7}50%{transform:translateY(7px);opacity:1}}
-    @media(prefers-reduced-motion:reduce){.page-next-cue svg{animation:none}}
-  `;
-  document.head.appendChild(arrowStyles);
-  pages.slice(1, -1).forEach((page, offset) => {
+  const cuePages = pages.slice(1, -1);
+  const cues = new Map();
+  cuePages.forEach((page, offset) => {
     const next = pages[offset + 2];
     const button = document.createElement('button');
     button.type = 'button';
@@ -92,8 +83,25 @@
     button.addEventListener('click', () => {
       if (active() && !busy) moveTo(top(next));
     });
-    const area = page.querySelector('.writing-area');
-    if (area) area.appendChild(button);
+    document.body.appendChild(button);
+    cues.set(page, button);
+  });
+  const cueVisibility = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const cue = cues.get(entry.target);
+      if (cue) cue.classList.toggle('cue-visible', entry.isIntersecting);
+    });
+  }, { threshold: .45 });
+  const nextVisibility = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const previous = pages[pages.indexOf(entry.target) - 1];
+      const cue = cues.get(previous);
+      if (cue) cue.classList.toggle('cue-hidden', entry.isIntersecting);
+    });
+  }, { threshold: .2 });
+  cuePages.forEach(page => {
+    cueVisibility.observe(page);
+    nextVisibility.observe(pages[pages.indexOf(page) + 1]);
   });
   document.addEventListener('touchstart', e => {
     start = active() && !excluded(e.target) && e.touches.length === 1

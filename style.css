@@ -140,7 +140,29 @@ background-size:34px 34px,34px 34px,46px 46px}
 
 .venue-details .dock-2{transition-delay:.4s}
 
+/* Fixed continuation control for detail pages.
+   It remains visible without depending on content height or scroll endpoints. */
+.page-next-cue{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom, 0px));transform:translateX(-50%);z-index:20;appearance:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;min-width:72px;min-height:64px;padding:8px 12px;border:0;background:transparent;color:var(--gold-deep);cursor:pointer;font-family:'Cinzel',serif;font-size:.68rem;font-weight:700;letter-spacing:.24em;text-transform:uppercase;text-shadow:0 1px 3px rgba(255,243,207,.9),0 1px 6px rgba(59,3,12,.18);opacity:0;pointer-events:none;transition:opacity .45s ease}
+.page-next-cue.cue-visible{opacity:1;pointer-events:auto}
+.page-next-cue svg{display:block;width:30px;height:30px;overflow:visible;color:inherit;animation:pageNextBob 1.7s ease-in-out infinite;filter:drop-shadow(0 1px 3px rgba(255,243,207,.8))}
+.page-next-cue:hover,.page-next-cue:focus-visible{color:var(--maroon-deep)}
+.page-next-cue:focus-visible{outline:2px solid var(--gold-deep);outline-offset:4px;border-radius:14px}
+@keyframes pageNextBob{0%,100%{transform:translateY(0);opacity:.7}50%{transform:translateY(6px);opacity:1}}
+
 @keyframes blink{50%{opacity:0}}
 @keyframes promptPulse{0%,100%{opacity:.85;transform:translateY(0)}50%{opacity:1;transform:translateY(-3px)}}
 @media(max-width:360px){.countdown{gap:6px}.count-unit{padding:11px 3px;border-radius:14px}.scratch-card{width:min(70vw,240px)}.venue-btn{padding:13px 16px}}
+
+/* Short modern phone viewports: compress vertical rhythm while retaining
+   the established normal-screen design values. */
+@media(max-height:740px){
+  .writing-area{gap:clamp(28px,6vh,42px);padding-top:clamp(34px,9vh,72px);padding-bottom:calc(92px + env(safe-area-inset-bottom, 0px))}
+  .event-details > .writing-area{padding-bottom:calc(92px + env(safe-area-inset-bottom, 0px))}
+  .scratch-title{margin-bottom:44px}
+  .scratch-card{width:min(48vw,188px)}
+  .countdown{margin-top:16px}
+  .count-unit{padding:10px 3px;border-radius:14px}
+  .venue-area{gap:clamp(20px,5vh,30px);padding-top:clamp(30px,8vh,64px);padding-bottom:calc(92px + env(safe-area-inset-bottom, 0px))}
+  .venue-btn{padding:13px 18px}
+}
 @media(prefers-reduced-motion:reduce){*{animation-duration:.01s!important;transition-duration:.01s!important}}
